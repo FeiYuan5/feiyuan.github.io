@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Fei Yuan</title>
+  <!--link rel="stylesheet" href="style.css"-->
+  <script src="https://cdn.tailwindcss.com/3.3.3"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.5rem;
+    }
+    header p {
+      margin: 10px 0 0;
+      font-size: 1rem;
+    }
+    .section {
+      background: white;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .section h2 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+    .grid {
+      display: grid;
+      gap: 20px;
+    }
+    .project, .skill {
+      border: 1px solid #e0e0e0;
+      border-radius: 6px;
+      padding: 16px;
+      background: #fafafa;
+    }
+    .project h3, .skill h3 {
+      margin: 0 0 10px;
+      font-size: 1.1rem;
+    }
+    .contact-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .contact-list li {
+      margin-bottom: 10px;
+    }
+    footer {
+      text-align: center;
+      padding: 15px 0;
+      color: #777;
+      font-size: 0.9rem;
+    }
+    .scroll-container {
+      width: 75vw;
+      padding: 120px 0;
+      display: flex;
+      flex-wrap: wrap;
+      /*flex-direction: column;*/
+      align-items: stretch;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+    .slide-in-element {
+      /* background: #3498db; */
+      padding: 5px 10px;
+      opacity: 0;
+      transition: transform 0.8s ease-out, opacity 1.2s ease-out;
+      transition-delay: var(--delay);
+    }
+    .slide-left {
+      transform: translateX(20vw);
+    }
+    .slide-right {
+      transform: translateX(-20vw);
+    }
+    .slide-up {
+      opacity: 0;
+      transform: translateY(3vw);
+      transition: transform 1.2s ease-out, opacity 2s ease-out;
+      transition-delay: var(--delay);
+    }
+    .slide-in-element.active {
+      opacity: 1;
+      transform: translateX(0px);
+    }
+    #vanta-canvas {
+      position: absolute;
+      background-position: 50% 25%;
+      width: 100%;
+      height: 100vh;
+      z-index: 1;
+    }
+    #brightness-mask {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 2; /* Sits directly on top of the canvas */
+      pointer-events: none; /* Allows mouse events to pass straight through */
+      background-color: black; /* Overlaying black creates the dimming effect */
+      opacity: 0.5; /* Default brightness (50% dimmed) */
+      will-change: opacity; /* Optimizes browser performance for smooth animation */
+    }
+    .clickable {
+      transition: transform 0.3s ease-out;
+    }
+    .clickable:hover {
+      transform: translateX(0) scale(0.97);
+    }
+    .small-clickable {
+      transition: transform 0.3s ease-out;
+    }
+    .small-clickable:hover {
+      transform: translateX(0) scale(0.90);
+    }
+    .mbutton {
+      transition: background-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out, transform 1.2s ease-out 0.4s, opacity 2s ease-out 0.4s;
+    }
+    .mbutton:hover {
+      box-shadow: 0 0 15px rgba(0, 123, 123, 0.8);
+      transform: scale(1.05);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <header style="height: 280px; display: none">
+    <h1>Fei Yuan</h1>
+    <p>Web Designer | Developer | Creative Problem Solver</p>
+  </header>
+  <main>
+    <div class="text-white relative flex-1 overflow-hidden bg-cover bg-no-repeat items-center"
+     style="height: 100vh; background-color: #0f101a">
+      <div class="vanta-wrapper">
+        <div id="vanta-canvas"></div>
+        <div id="brightness-mask"></div>
+      </div>
+      <div class="absolute w-full h-full overflow-hidden bg-fixed flex flex-col items-center justify-center space-y-8" 
+        style="z-index: 3">
+        <h2 class="slide-up text-4xl text-center">Fei Yuan</h2>
+        <div class="max-w-5xl m-auto text-2xl text-center pb-2">
+          <p class="text-xl slide-up" style="--delay: 0.2s">Developer | Researcher | Creative Problem Solver</p>
+        </div>
+        <button type="button" class="slide-up t-4 rounded border-2 border-neutral-50 px-6 pb-[8px] pt-[10px] text-sm font-medium leading-normal 
+            text-neutral-50 mbutton" onclick="document.getElementById('about-me').scrollIntoView({ behavior: 'smooth' });">
+            Check out my work</button>
+        <!-- class="rounded border-2 border-neutral-50 px-6 pb-[8px] pt-[10px] text-sm font-medium uppercase leading-normal text-neutral-50 
+         transition duration-150 ease-in-out hover:border-neutral-100 hover:bg-neutral-500 hover:bg-opacity-10 hover:text-neutral-100 
+         active:border-neutral-200 active:text-neutral-200 dark:hover:bg-neutral-100 dark:hover:bg-opacity-10" onclick="directToHost()" 
+         id="mbutton">log in</button></div-->
+
+      </div>
+    </div>
+
+    <!--div class="space-y-4 text-white relative flex-1 overflow-hidden bg-cover bg-no-repeat items-center" style="background-image: 
+      url('./background02.jpg'); background-position: 50% 25%; width:100%; height:100vh;">
+      
+    </div-->
+
+    <div id="about-me" class="space-y-4 text-white relative flex-1 overflow-hidden bg-cover bg-no-repeat items-center" style="background-image: 
+      url('./Icons and Backgrounds/background03.png'); background-position: 50% 25%; width:100%;">
+      <div class="text-white items-center justify-center w-full h-full" 
+        style="background: linear-gradient(to bottom, rgba(10, 11, 24, 0.8) 80%, #10111c 100%);
+        display:flex; flex-direction: column; justify-content: space-between;">
+        <div class="flex text-white items-center justify-center" style="width:100vw; height: 100vh">
+          <div class="space-y-8 mx-4" style="flex: 1 1 600px; max-width: 40vw; margin-right:5vw">
+            <h1 class="text-2xl">About Me</h1>
+            <p>Hi, I am a computer science student pursuing a Master's degree at the University of Illinois Urbana-Champaign. Aside from 
+              doing research on optimization and artificial intellegence, I am also a designer and developer specializing in building clean, 
+              modern applications and digital experiences. I have experience working with a variety of programming languages and frameworks,
+              and I hope to leverage my skills to create innovative solutions that make a positive impact on the world.
+            </p>
+          </div>
+          <div style="display:flex; flex-direction:column; align-items:center; justify-content: center; height:50vh;
+            flex: 1 1 50px; max-width: 20vw; margin-top: 2rem">
+            <a href="./Documents/Fei Yuan Resume Jul2026.pdf">
+            <div class="clickable flex items-center justify-center m-4" style="flex-direction:column; border: 2px solid rgb(111, 196, 245); 
+              border-radius: 12px;">
+              <img src="./Icons and Backgrounds/document-256.ico" alt="Resume Icon" class="pt-4 px-4" style="width: 125px; height: auto;">
+              <p class="text-sm py-2">View my resume</p>
+            </div>
+            </a>
+            <div class="clickable flex items-center justify-center m-4" style="flex-direction:column; border: 2px solid rgb(111, 196, 245); 
+              border-radius: 12px;" onclick="document.getElementById('contacts').scrollIntoView({ behavior: 'smooth' });">
+              <img src="./Icons and Backgrounds/icons8-email-100.png" alt="Email Icon" class="pt-4 px-4" style="width: 125px; height: auto;">
+              <p class="text-sm py-2">Contact me</p>
+            </div>
+          </div>
+        </div>
+        <section class="scroll-container" style="height: 75vh">
+          <div class="slide-in-element slide-left" style="--delay: 0s; width: 30%; height: 100%;">
+            <a href="./Documents/Solid Time Minimization Transshipment.pdf">
+              <div class="image-cluster clickable" style="position:relative">
+                <img src="./Icons and Backgrounds/Paper 1 Page 3.jpg" style="position:absolute; top:0; left:0; padding: 20px;">
+                <img src="./Icons and Backgrounds/Paper 1 Page 2.jpg" style="position:absolute; top:5px; left:5px; padding: 20px;">
+                <img src="./Icons and Backgrounds/Paper 1 Page 1.jpg" alt="Solid Time Minimization Transshipment" style="position:absolute; top:10px; left:10px; padding: 20px;">
+              </div>
+            </a>
+          </div>
+          <div class="slide-in-element slide-left" style="--delay: 0.05s; width: 30%; height: 100%;">
+            <a href="./Documents/Nearest Optimal Solid Transportation.pdf">
+              <div class="image-cluster clickable" style="position:relative">
+                <img src="./Icons and Backgrounds/Paper 2 Page 3.jpg" style="position:absolute; top:0; left:0; padding: 20px;">
+                <img src="./Icons and Backgrounds/Paper 2 Page 2.jpg" style="position:absolute; top:5px; left:5px; padding: 20px;">
+                <img src="./Icons and Backgrounds/Paper 2 Page 1.jpg" alt="Nearest Optimal Solid Transportation" style="position:absolute; top:10px; left:10px; padding: 20px;">
+              </div>
+            </a>
+          </div>
+          <div style="width: 40%; height: 100%; flex-direction: column; justify-content: space-around;">
+            <div class="text-2xl slide-in-element slide-left" style="--delay: 0.1s;">Research on Multi-index Transportation Problems</div>
+            <div class="slide-in-element slide-left" style="--delay: 0.2s; padding: 20px 20px;">
+              Check out my recent research on variants ofmulti-index transportation problems, where I explore optimization techniques 
+              and algorithms to solve high-dimensional transportation systems. These papers provide insights into efficient solutions 
+              for real-world logistics and supply chain management.
+          </div>
+        </section>
+      
+        <section class="scroll-container">
+          <div style="width: 40%; height: 100%; flex-direction: column; justify-content: space-around;">
+            <div class="text-2xl slide-in-element slide-right" style="--delay: 0.1s;">UMD EngageBest Project</div>
+            <div class="slide-in-element slide-right" style="--delay: 0.2s; padding: 20px 20px;">
+              The UMD EngageBest project is a labor of love by a group of passionate developers at the University of Maryland. As a
+              web application designed to enhance student engagement and streamline data collection for instructors, it features a modern, 
+              responsive design and leverages gamified interfaces to provide an intuitive user experience. Explore the project 
+              to see how it can be applied in various contexts to improve engagement metrics.
+            </div>
+          </div>
+          <div class="slide-in-element slide-right" style="--delay: 0s; width: 60%; height: 100%; flex: 1 1 300px;">
+            <a href="https://seam.cs.umd.edu/Archive/Engagebest/" target="_blank">
+              <img src='./Icons and Backgrounds/EB Landing Page.png' alt="EngageBest-Landing-Page" class="clickable">
+            </a>
+          </div>
+        </section>
+
+
+        <section class="scroll-container" style="padding: 20px 0 160px;">
+          <div style="display:flex; width: 100%; min-height: 20vh; flex-direction: column; justify-content: center; align-items: center;">
+            <div class="text-2xl slide-up">Much more to come!</div>
+            <div class="slide-up" style="--delay: 0.2s; padding: 20px 20px;">
+              <p class="text-xl">My other projects will appear here as soon as they're ready.</p>
+            </div>
+          </div>
+        </section>
+        <!--section class="scroll-container">
+          <div class="slide-in-element slide-left" style="--delay: 0s; width: 60%; height: 100%;">
+            <a href="https://www.example.com">
+              <img src='./background01.png' alt="EngageBest-Landing-Page">
+            </a>
+          </div>
+          <div style="width: 40%; height: 100%; flex-direction: column; justify-content: space-around;">
+            <div class="text-2xl slide-in-element slide-left" style="--delay: 0.1s;">Project 3</div>
+            <div class="slide-in-element slide-left" style="--delay: 0.2s; padding: 20px 20px;">
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+              Aliquam pharetra semper erat sit amet efficitur. Donec a feugiat ante. Cras quis ipsum velit. 
+              Donec in lorem massa. Sed maximus dignissim fringilla. Pellentesque id augue bibendum, ornare 
+              lorem vitae, facilisis enim. In ut pulvinar dolor. Maecenas quis ultrices est, et efficitur 
+              augue. Ut ante orci, rutrum at fringilla et, tincidunt ac turpis.
+            </div>
+          </div>
+        </section-->
+      </div>
+    </div>
+    
+    <!--section class="section">
+      <h2>Skills</h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="skill">
+          <h3>Web Design</h3>
+          <p>UI/UX design, responsive layouts, prototyping, visual branding.</p>
+        </div>
+        <div class="skill">
+          <h3>Development</h3>
+          <p>HTML, CSS, JavaScript, responsive frameworks, performance optimization.</p>
+        </div>
+        <div class="skill">
+          <h3>Creative Strategy</h3>
+          <p>Project planning, content creation, digital marketing collaboration.</p>
+        </div>
+      </div>
+    </section-->
+
+    <div id="contacts" class="space-y-4 text-white relative flex overflow-hidden bg-cover bg-no-repeat items-center p-8 items-center justify-center" 
+      style="background-color: #10111c; height: 50vh">
+      <div>
+        <h2 class="text-2xl pb-8">Contact</h2>
+        <div class="text-white space-y-8 pl-4" style="display:flex; justify-content: space-between">
+          <ul class="contact-list"style="margin-right: 6rem;">
+            <li>Email:</li>
+            <li class="pl-4">yuanfei20160811@gmail.com</li>
+            <li class="pl-4">eyuan6@illinois.edu</li>
+            <li class="mt-4">Phone: (202) 876-6124</li>
+            <li class="mt-4">Location: Champaign, Illinois, U.S.A</li>
+          </ul>
+          <div class="pl-4" style="margin-left: 6rem; margin-top:0; align-items:flex-start; flex-direction:column; height:100%">
+            <a href="https://github.com/FeiYuan5" target="_blank">
+              <div class="flex items-center justify-center m-4" style="flex-direction:column">
+                <img src="./Icons and Backgrounds/github thumbnail.png" alt="Github Logo" class="small-clickable" style="width: 50px; height: auto;">
+                <p class="text-xs">Github</p>
+              </div>
+            </a>
+            <a href="https://www.linkedin.com/in/fei-yuan-ai/" target="_blank">
+              <div class="flex items-center justify-center m-4" style="flex-direction:column">
+                <img src="./Icons and Backgrounds/linkedin Thumbnail.png" alt="Linkedin Logo" class="small-clickable" style="width: 50px; height: auto;">
+                <p class="text-xs">Linkedin</p>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="text-white" style="background-color: #10111c">
+    © 2026 Fei Yuan. All rights reserved.
+  </footer>
+</body>
+<script>
+    // Select the element to animate
+    const elements = document.querySelectorAll('.slide-in-element');
+
+    // Configure the observer options
+    const options = {
+      root: null,         // Uses the browser viewport
+      threshold: 0.2      // Triggers when 20% of the element is visible
+    };
+
+    // Create the observer callback function
+    const observer = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          // Add the class to trigger the CSS animation
+          entry.target.classList.add('active');
+          // Stop observing once the animation triggers
+          observer.unobserve(entry.target);
+        }
+      });
+    }, options);
+
+    // Start watching the target element
+    elements.forEach(el => observer.observe(el));
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="vanta.trunk.min.js"></script>
+  <script>
+    const trunkEffect = VANTA.TRUNK({
+      el: "#vanta-canvas",
+      mouseControls: false,
+      touchControls: false,
+      gyroControls: false,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      backgroundColor: 0xf101a,
+      color: 0x2d5258,
+    })
+
+    const ovl = document.querySelectorAll('.slide-up');
+    requestAnimationFrame(() => {
+      ovl.forEach(el => {
+        el.style.opacity = 1;
+        el.style.transform = 'translateY(0)';
+      });
+    });
+
+    /*
+    const canvasEl = document.getElementById('vanta-canvas');
+
+    window.addEventListener('mousemove', (e) => {
+      // Convert mouse coordinates to pixel strings
+      const x = e.clientX + 'px';
+      const y = e.clientY + 'px';
+      
+      // Set CSS variables directly on the canvas element
+      canvasEl.style.setProperty('--mouse-x', x);
+      canvasEl.style.setProperty('--mouse-y', y);
+    });    
+    */
+    
+    // Helper function to blend two hex colors together based on a factor (0 to 1)
+    function lerpColor(color1, color2, factor) {
+      // Extract RGB components for the first color
+      const r1 = (color1 >> 16) & 0xff;
+      const g1 = (color1 >> 8) & 0xff;
+      const b1 = color1 & 0xff;
+
+      // Extract RGB components for the second color
+      const r2 = (color2 >> 16) & 0xff;
+      const g2 = (color2 >> 8) & 0xff;
+      const b2 = color2 & 0xff;
+
+      // Blend each individual channel
+      const r = Math.round(r1 + (r2 - r1) * factor);
+      const g = Math.round(g1 + (g2 - g1) * factor);
+      const b = Math.round(b1 + (b2 - b1) * factor);
+
+      // Combine channels back into a single hexadecimal integer
+      return (r << 16) | (g << 8) | b;
+    }
+
+    const mask = document.getElementById('brightness-mask');
+    window.addEventListener("mousemove", (event) => {
+      // Get screen center coordinates
+      const centerX = window.innerWidth / 2;
+      const centerY = window.innerHeight / 2;
+
+      // Calculate absolute distance from the mouse to the center
+      const distanceX = event.clientX - centerX;
+      const distanceY = event.clientY - centerY;
+      const distanceToCenter = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+      // Maximum possible distance from center to a corner (screen diagonal / 2)
+      const maxDistance = Math.sqrt(centerX * centerX + centerY * centerY);
+
+      // Normalize proximity: 1 at the dead center, 0 at the farthest corner
+      const proximity = 1 - (distanceToCenter / maxDistance);
+
+      // Define your chaos boundaries (e.g., minimum 1.0, maximum 15.0 at the center)
+      const minChaos = 0.5;
+      const maxChaos = 2.5;
+
+      // Calculate new dynamic chaos based on proximity
+      const dynamicChaos = minChaos + (proximity * (maxChaos - minChaos));
+
+      // 3. Push the dynamic value straight into Vanta
+      trunkEffect.setOptions({
+        chaos: dynamicChaos,
+      });
+
+      const minOpacity = 0.0; // 100% full brightness
+      const maxOpacity = 0.5; // Deeply dimmed down
+      const targetedOpacity = maxOpacity - (proximity * (maxOpacity - minOpacity));
+      
+      // 3. Directly update the CSS opacity property
+      mask.style.opacity = targetedOpacity;
+    });
+
+  </script>
+</html>
